@@ -15,13 +15,27 @@ export interface ApiExplorerHeaderProps {
   className?: string;
   /** API 이름 (예: DEMO.API0001) */
   title: string;
+  currentType?: "default" | "test" | "error";
+  currentResponseValue?: string | null;
   /** 제목 아래 설명 */
   subtext?: string;
   /** 모드 변경 시 (선택, 더미 토글 외 확장용) */
   onModeChange?: (mode: ApiExplorerViewMode) => void;
+  /** JSON 붙여넣기·파일 가져오기 등 (없으면 definition 모드만 전환) */
+  onJsonAddClick?: () => void;
+  onSettingsClick?: () => void;
 }
 
-export default function ApiExplorerHeader({ className = "", title, subtext = "회원가입 대상 여부 조회 (Y 가 가입가능대상임 )", onModeChange }: ApiExplorerHeaderProps) {
+export default function ApiExplorerHeader({
+  className = "",
+  title,
+  currentType = "default",
+  currentResponseValue = null,
+  subtext,
+  onModeChange,
+  onJsonAddClick,
+  onSettingsClick,
+}: ApiExplorerHeaderProps) {
   const [mode, setMode] = useState<ApiExplorerViewMode>("definition");
 
   const setModeAndNotify = (next: ApiExplorerViewMode) => {
@@ -44,20 +58,28 @@ export default function ApiExplorerHeader({ className = "", title, subtext = "�
           <Btn
             category="primary"
             size="medium"
-            variant={mode !== "definition"}
+            variant
             width={140}
             className={mode === "definition" ? "!font-semibold" : ""}
-            onClick={() => setModeAndNotify("definition")}
+            onClick={() => {
+              setModeAndNotify("definition");
+              onJsonAddClick?.();
+            }}
           >
-            정의서
+            json 추가하기
           </Btn>
           <Btn
             category="primary"
             size="medium"
-            variant={mode !== "settings"}
             width={140}
-            className={mode === "settings" ? "!font-semibold" : ""}
-            onClick={() => setModeAndNotify("settings")}
+            className=""
+            onClick={() => {
+              if (onSettingsClick) {
+                onSettingsClick();
+                return;
+              }
+              window.location.href = `/api/json?state=edit&apiName=${encodeURIComponent(title)}&type=${currentType}${currentResponseValue ? `&responseValue=${encodeURIComponent(currentResponseValue)}` : ""}`;
+            }}
           >
             더미설정
           </Btn>
