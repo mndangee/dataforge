@@ -3,16 +3,14 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { readAppProxyConfigDisk } from "./project-fs";
-import {
-  detectPreferredNodeBin,
-  expandConfigPath,
-  shouldVerifyNodeExecutableExists,
-} from "./upstream-node-bin";
+import { appendStderrTail, resetStderrTail, spawnExitDetailAndHint, type StderrTailRef } from "./spawn-exit-message";
+import { expandConfigPath, resolveUpstreamNodeExecutable, shouldVerifyNodeExecutableExists } from "./upstream-node-bin";
 
 let fallbackChild: ChildProcess | null = null;
 let fallbackSpawnLastError: string | undefined;
 let fallbackLastStderrLine = "";
 let fallbackLastStdoutLine = "";
+const fallbackStderrTail: StderrTailRef = { s: "" };
 
 export type FallbackSpawnStatus = { running: boolean; lastError?: string };
 
@@ -28,6 +26,7 @@ export function stopFallbackSpawn(): void {
   fallbackSpawnLastError = undefined;
   fallbackLastStderrLine = "";
   fallbackLastStdoutLine = "";
+  resetStderrTail(fallbackStderrTail);
   const c = fallbackChild;
   fallbackChild = null;
   if (!c || c.killed) return;
@@ -46,6 +45,7 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
   fallbackSpawnLastError = undefined;
   fallbackLastStderrLine = "";
   fallbackLastStdoutLine = "";
+  resetStderrTail(fallbackStderrTail);
   if (!mockServerListening) {
     stopFallbackSpawn();
     return;
@@ -68,7 +68,7 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
 
   const dir = expandConfigPath(dirRaw);
   const nodeBinRaw = (ps.upstreamNodePath ?? "").trim();
-  const nodeBin = nodeBinRaw ? expandConfigPath(nodeBinRaw) : detectPreferredNodeBin();
+  const nodeBin = resolveUpstreamNodeExecutable(nodeBinRaw || null, dir);
   if (shouldVerifyNodeExecutableExists(nodeBinRaw) && !existsSync(nodeBin)) {
     fallbackSpawnLastError = `업스트림 자동 실행: Node 실행 파일을 찾을 수 없습니다: ${nodeBin}`;
     return;
@@ -148,6 +148,7 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
   });
 
   child.stderr?.on("data", (buf) => {
+    appendStderrTail(fallbackStderrTail, Buffer.from(buf));
     const line = buf.toString().trim();
     if (line) {
       const oneLine = line.split(/\r?\n/).map((x) => x.trim()).filter(Boolean).at(-1);
@@ -168,9 +169,8 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
     fallbackChild = null;
     if (signal === "SIGTERM") return;
     if (code != null && code !== 0) {
-      const reason = fallbackLastStderrLine || fallbackLastStdoutLine;
-      const detail = reason ? ` 원인: ${reason}` : "";
-      fallbackSpawnLastError = `업스트림 자동 실행 프로세스가 비정상 종료되었습니다 (code ${code}). 실행: ${execDesc} (cwd: ${dir}).${detail}`;
+      const { detail, hint } = spawnExitDetailAndHint(fallbackStderrTail.s, fallbackLastStderrLine, fallbackLastStdoutLine);
+      fallbackSpawnLastError = `업스트림 자동 실행 프로세스가 비정상 종료되었습니다 (code ${code}). 실행: ${execDesc} (cwd: ${dir}).${detail}${hint}`;
     }
   });
 }
