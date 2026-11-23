@@ -11,7 +11,7 @@
 
 ### 한 줄 요약
 
-DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·업스트림 자동 실행·다운로드 안내 페이지 포함.
+DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·업스트림 자동 실행 포함.
 
 ### 포함 파일 (Assets)
 
@@ -32,7 +32,6 @@ DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·�
 - 프로젝트·API·JSON 응답 관리 (Electron 시 디스크 저장)
 - **프록시 설정**: 모의 서버 ON/OFF, 포트, 프로토콜 프로필(트랜 ID + responseMessage / 일반 JSON REST)
 - **업스트림 자동 실행**: 백엔드 작업 폴더·포트·(선택) Node 경로·커스텀 명령
-- **다운로드 · 공유** (`/downloads`): Releases·ZIP·문서 링크 모음
 
 ### 문서
 

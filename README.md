@@ -237,12 +237,10 @@ src/
 lsof -nP -iTCP:7777 -iTCP:7778 -iTCP:4780
 ```
 
-## 다운로드와 공유
+## 릴리즈 다운로드
 
 - [최신 릴리스](https://github.com/mndangee/proxy/releases/latest)
 - [모든 릴리스](https://github.com/mndangee/proxy/releases)
-- [master 브랜치 ZIP](https://github.com/mndangee/proxy/archive/refs/heads/master.zip)
-- 앱 내부 `/downloads` 페이지
 
 ## 기술 스택
 

@@ -3,7 +3,6 @@ import RootLayout from '../../app/layout'
 import HomePage from '../../app/page'
 import DesignSystemPage from '../../app/design-system/page'
 import LicensesPage from '../../app/licenses/page'
-import DownloadsPage from '../../app/downloads/page'
 import ProjectPage from '../../app/project/page'
 import ProjectApiPage from '../../app/api/page'
 import ApiJsonPage from '../../app/api/json/page'
@@ -119,8 +118,6 @@ function App(): React.JSX.Element {
     Page = DesignSystemPage
   } else if (route === 'licenses') {
     Page = LicensesPage
-  } else if (route === 'downloads') {
-    Page = DownloadsPage
   } else if (route === 'api/json') {
     Page = ApiJsonPage
   } else if (apiMatch && apiName) {
