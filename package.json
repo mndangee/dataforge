@@ -22,7 +22,6 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "apply-sample-project-metadata": "node scripts/apply-sample-project-metadata-to-project.mjs",
     "free-port": "node scripts/free-port.mjs",
     "reset:user-data": "node scripts/reset-all-user-data.mjs",
     "licenses": "node scripts/generate-licenses.js",
