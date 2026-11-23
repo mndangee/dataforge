@@ -428,6 +428,23 @@ function rowMatchesQuery(row: StoreRow, searchParams: URLSearchParams): boolean 
   return entries.every(([key, value]) => searchParams.getAll(key.trim()).includes(value));
 }
 
+function mergePageQueryParams(requestParams: URLSearchParams, referer: string | string[] | undefined): URLSearchParams {
+  const merged = new URLSearchParams(requestParams);
+  const refererValue = Array.isArray(referer) ? referer[0] : referer;
+  if (!refererValue) return merged;
+
+  try {
+    const pageParams = new URL(refererValue).searchParams;
+    for (const [key, value] of pageParams) {
+      // API 요청 URL에 같은 키가 있으면 요청 URL의 값을 우선한다.
+      if (!merged.has(key)) merged.append(key, value);
+    }
+  } catch {
+    // 잘못된 Referer는 무시하고 API 요청 URL의 쿼리만 사용한다.
+  }
+  return merged;
+}
+
 type PickedConfiguration = { configuration: string; label?: string; value?: string; editorType: string; apiName?: string };
 
 function findStoreRows(store: { byApiName: Record<string, StoreRow[]> }, apiName: string): StoreRow[] | undefined {
@@ -454,10 +471,32 @@ function pickConfiguration(
 ): PickedConfiguration | null {
   if (!rows?.length) return null;
 
+  const responseValue = active?.responseValue?.trim();
+  const activeRow = responseValue ? rows.find((row) => (row.value ?? "").trim() === responseValue) : undefined;
+  // 사용자가 조건 없는 응답을 명시적으로 선택했다면 URL 쿼리보다 우선한다.
+  if (activeRow && queryConditionCount(activeRow) === 0) {
+    const configuration = normalizeConfigurationForMock(activeRow.configuration);
+    if (configuration) {
+      return {
+        configuration,
+        label: activeRow.label,
+        value: activeRow.value,
+        editorType: activeRow.editorType,
+      };
+    }
+    if (activeOnly) return null;
+  }
+
   const matched = rows
     .map((row, index) => ({ row, index }))
     .filter(({ row }) => rowMatchesQuery(row, searchParams))
-    .sort((a, b) => queryConditionCount(b.row) - queryConditionCount(a.row) || a.index - b.index);
+    .sort((a, b) => {
+      if (activeRow) {
+        if (a.row === activeRow) return -1;
+        if (b.row === activeRow) return 1;
+      }
+      return queryConditionCount(b.row) - queryConditionCount(a.row) || a.index - b.index;
+    });
   for (const { row } of matched) {
     const configuration = normalizeConfigurationForMock(row.configuration);
     if (configuration) return { configuration, label: row.label, value: row.value, editorType: row.editorType };
@@ -466,7 +505,6 @@ function pickConfiguration(
   // 조건부 응답은 조건이 맞지 않을 때 활성/기본 폴백 후보로 사용하지 않습니다.
   const fallbackRows = rows.filter((row) => queryConditionCount(row) === 0);
   if (fallbackRows.length === 0) return null;
-  const responseValue = active?.responseValue?.trim();
   if (responseValue) {
     const byValue = fallbackRows.find((r) => (r.value ?? "").trim() === responseValue);
     const fromValue = byValue ? normalizeConfigurationForMock(byValue.configuration) : null;
@@ -669,7 +707,7 @@ async function handleMockRequest(req: http.IncomingMessage, res: http.ServerResp
   try {
     const u = new URL(urlRaw, "http://127.0.0.1");
     pathname = u.pathname;
-    searchParams = u.searchParams;
+    searchParams = mergePageQueryParams(u.searchParams, req.headers.referer);
   } catch {
     pathname = "/";
   }

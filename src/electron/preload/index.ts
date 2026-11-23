@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { electronAPI } from "@electron-toolkit/preload";
 
 import type { LinkedClientEntry } from "../../types";
 
@@ -75,18 +74,8 @@ const projects = {
 
 const api = { projects };
 
-if (process.contextIsolated) {
-  try {
-    contextBridge.exposeInMainWorld("electron", electronAPI);
-  } catch (error) {
-    console.error("[preload] expose electron failed", error);
-  }
-  try {
-    contextBridge.exposeInMainWorld("api", api);
-  } catch (error) {
-    console.error("[preload] expose api (projects) failed — renderer may fall back to window.electron.ipcRenderer", error);
-  }
-} else {
-  window.electron = electronAPI;
-  window.api = api;
+try {
+  contextBridge.exposeInMainWorld("api", api);
+} catch (error) {
+  console.error("[preload] expose api (projects) failed", error);
 }

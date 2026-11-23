@@ -1005,8 +1005,44 @@ export async function refreshSavedResponsesFromDisk(projectId: string): Promise<
     return;
   }
   try {
-    const raw = (await disk.getResponsesStore(folder)) as { version?: number; byApiName?: unknown };
-    savedResponsesCache[projectId] = normalizeResponsesByApiName(raw?.byApiName ?? {});
+    let raw = (await disk.getResponsesStore(folder)) as { version?: number; byApiName?: unknown };
+    let diskResponses = normalizeResponsesByApiName(raw?.byApiName ?? {});
+
+    // preload 연결이 끊긴 버전에서 브라우저 저장소로 임시 저장된 응답을 디스크로 복구한다.
+    const browserResponses = readAllBrowserResponsesMap()[projectId] ?? {};
+    let migrationFailed = false;
+    let migrated = false;
+    for (const [apiName, rows] of Object.entries(browserResponses)) {
+      for (const row of rows) {
+        const existing = (diskResponses[apiName] ?? []).find((item) => item.value === row.value);
+        const browserUpdatedAt = Date.parse(row.updatedAt);
+        const diskUpdatedAt = existing ? Date.parse(existing.updatedAt) : Number.NEGATIVE_INFINITY;
+        if (existing && (!Number.isFinite(browserUpdatedAt) || browserUpdatedAt <= diskUpdatedAt)) continue;
+
+        try {
+          const result = (await disk.upsertApiResponse(folder, apiName, {
+            value: existing?.value ?? null,
+            label: row.label,
+            description: row.description,
+            editorType: row.editorType,
+            configuration: row.configuration,
+            queryParams: row.queryParams,
+            expectedUpdatedAt: existing?.updatedAt,
+          })) as { ok?: boolean };
+          if (!result.ok) migrationFailed = true;
+          else migrated = true;
+        } catch {
+          migrationFailed = true;
+        }
+      }
+    }
+
+    if (migrated) {
+      raw = (await disk.getResponsesStore(folder)) as { version?: number; byApiName?: unknown };
+      diskResponses = normalizeResponsesByApiName(raw?.byApiName ?? {});
+    }
+    if (!migrationFailed && Object.keys(browserResponses).length > 0) removeBrowserSavedResponsesForProject(projectId);
+    savedResponsesCache[projectId] = diskResponses;
   } catch {
     savedResponsesCache[projectId] = {};
   }
