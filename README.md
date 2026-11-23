@@ -184,8 +184,11 @@ npm run build
 npm run build:win          # Windows x64
 npm run build:win:arm64    # Windows ARM64
 npm run build:mac          # macOS ARM64
+npm run build:release      # 릴리즈 필수 산출물: Windows x64 + macOS ARM64
 npm run build:linux
 ```
+
+정식 릴리즈에는 Windows 설치 파일과 macOS 배포 ZIP을 항상 함께 첨부합니다. 한쪽 파일이라도 없으면 릴리즈가 완료된 것으로 보지 않습니다.
 
 ## 서명하지 않은 macOS 앱 배포
 

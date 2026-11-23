@@ -1,6 +1,6 @@
 {
   "name": "proxy",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "An Electron application with React and TypeScript",
   "license": "UNLICENSED",
   "engines": {
@@ -27,34 +27,32 @@
     "reset:user-data": "node scripts/reset-all-user-data.mjs",
     "licenses": "node scripts/generate-licenses.js",
     "docs:data-guide-pdf": "npx --yes md-to-pdf docs/data-lifecycle-guide.md",
-    "docs:project-overview-ppt": "node scripts/generate-project-overview-ppt.mjs",
-    "docs:project-ppt": "node scripts/generate-project-presentation-ppt.mjs",
-    "docs:stakeholder-ppt": "node scripts/generate-stakeholder-presentation-ppt.mjs",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "run:mac": "bash scripts/run-mac.sh",
     "run:mac:app": "bash scripts/run-mac.sh --app",
+    "prebuild": "npm run licenses",
     "build": "npm run typecheck && electron-vite build",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps && npm run licenses",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win --x64",
     "build:win:arm64": "npm run build && electron-builder --win --arm64",
-    "build:mac": "electron-vite build && electron-builder --mac --arm64",
+    "build:release": "npm run build:win && npm run bundle:mac:unsigned:arm64",
+    "build:mac": "npm run build && electron-builder --mac --arm64",
     "build:mac:unsigned": "npm run build:mac:unsigned:arm64",
-    "build:mac:unsigned:arm64": "electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --arm64 -c.mac.identity=null -c.mac.notarize=false -c.mac.hardenedRuntime=false",
-    "build:mac:unsigned:x64": "electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --x64 -c.mac.identity=null -c.mac.notarize=false -c.mac.hardenedRuntime=false",
+    "build:mac:unsigned:arm64": "npm run build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --arm64 -c.mac.identity=null -c.mac.notarize=false -c.mac.hardenedRuntime=false",
+    "build:mac:unsigned:x64": "npm run build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --x64 -c.mac.identity=null -c.mac.notarize=false -c.mac.hardenedRuntime=false",
     "bundle:mac:unsigned": "npm run bundle:mac:unsigned:arm64",
     "bundle:mac:unsigned:arm64": "bash scripts/package-mac-unsigned-bundle.sh arm64",
     "bundle:mac:unsigned:x64": "bash scripts/package-mac-unsigned-bundle.sh x64",
-    "build:mac:release": "electron-vite build && electron-builder --mac --arm64 -c.mac.notarize=true",
-    "build:linux": "electron-vite build && electron-builder --linux"
+    "build:mac:release": "npm run build && electron-builder --mac --arm64 -c.mac.notarize=true",
+    "build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "adm-zip": "^0.5.17",
-    "electron-updater": "^6.3.9",
-    "jszip": "^3.10.1",
+    "adm-zip": "0.6.1",
+    "jszip": "3.10.2",
     "react-textarea-autosize": "^8.5.9"
   },
   "devDependencies": {
@@ -68,15 +66,14 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.24",
-    "electron": "^39.2.6",
-    "electron-builder": "^26.0.12",
+    "electron": "45.4.1",
+    "electron-builder": "26.18.0",
     "electron-vite": "^5.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "postcss": "^8.5.6",
-    "pptxgenjs": "^4.0.1",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "react": "^18.3.1",
@@ -84,5 +81,8 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"
+  },
+  "overrides": {
+    "minimatch": "11.0.1"
   }
 }

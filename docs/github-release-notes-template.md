@@ -17,14 +17,14 @@ DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·�
 
 | 파일 | 설명 |
 |------|------|
-| `proxy-0.1.0.dmg` 등 | macOS용 설치 이미지 (`${name}-${version}`) |
-| `proxy-0.1.0-setup.exe` 등 | Windows용 설치 프로그램(NSIS) |
+| `proxy-X.Y.Z-setup.exe` | Windows x64 설치 프로그램(NSIS) |
+| `proxy-mac-unsigned-arm64.zip` | macOS Apple Silicon용 앱과 `open.mac.command` |
 
-※ 실제 파일명은 `electron-builder.yml`의 `artifactName` 규칙에 따릅니다. 위 이름이 다르면 표만 수정하세요.
+두 파일을 모두 첨부해야 릴리즈가 완료됩니다. 실제 파일명이 다르면 표도 함께 수정하세요.
 
 ### 설치 · 실행
 
-- **macOS**: DMG를 열고 앱을 Applications로 드래그한 뒤 실행합니다. (보안 경고 시 시스템 설정에서 허용)
+- **macOS**: ZIP 압축을 푼 뒤 `open.mac.command`를 더블클릭합니다.
 - **Windows**: `setup.exe` 실행 후 안내에 따라 설치합니다.
 
 ### 주요 기능 (이번 빌드 기준)
@@ -32,13 +32,12 @@ DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·�
 - 프로젝트·API·JSON 응답 관리 (Electron 시 디스크 저장)
 - **프록시 설정**: 모의 서버 ON/OFF, 포트, 프로토콜 프로필(트랜 ID + responseMessage / 일반 JSON REST)
 - **업스트림 자동 실행**: 백엔드 작업 폴더·포트·(선택) Node 경로·커스텀 명령
-- **다운로드 · 공유** (`/downloads`): Releases·ZIP·문서·PPT 링크 모음
+- **다운로드 · 공유** (`/downloads`): Releases·ZIP·문서 링크 모음
 
 ### 문서
 
 - [README](https://github.com/mndangee/proxy/blob/main/README.md) — 설치·빌드·다운로드 표
 - [프로젝트 전체 동작 가이드](https://github.com/mndangee/proxy/blob/main/docs/project-full-flow-usage.md)
-- 개요 PPT: 저장소 `docs/DataForge-프로젝트-개요-및-사용법.pptx` 또는 Releases Assets에 첨부한 경우 여기서 다운로드
 
 ### Node 관련 (사용자 안내)
 
@@ -51,7 +50,7 @@ DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·�
 git clone https://github.com/mndangee/proxy.git
 cd proxy
 npm install
-npm run build:mac   # 또는 build:win
+npm run build:release
 ```
 
 산출물은 저장소 루트 **`dist/`** 에 생성됩니다.
@@ -71,7 +70,7 @@ npm run build:mac   # 또는 build:win
 - 수정: …
 - 문서: …
 
-**Assets:** macOS `.dmg`, Windows `setup.exe` (또는 해당 릴리스에 첨부된 파일명 그대로)
+**Assets:** macOS `proxy-mac-unsigned-arm64.zip`, Windows `proxy-X.Y.Z-setup.exe`
 
 **문서:** README · docs/project-full-flow-usage.md
 ```

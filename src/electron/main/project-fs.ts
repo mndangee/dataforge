@@ -26,6 +26,46 @@ export const APP_PROXY_CONFIG_VERSION = 2;
 /** 디스크 v1: legacyGateway, v2: interceptGateway */
 export const APP_PROXY_CONFIG_VERSION_LEGACY = 1;
 
+const MAX_ZIP_ENTRY_COUNT = 5_000;
+const MAX_ZIP_ENTRY_SIZE_BYTES = 100 * 1024 * 1024;
+const MAX_ZIP_TOTAL_SIZE_BYTES = 500 * 1024 * 1024;
+
+function validateZipEntries(zip: AdmZip): void {
+  const entries = zip.getEntries();
+  if (entries.length > MAX_ZIP_ENTRY_COUNT) throw new Error("zip-entry-limit");
+
+  let totalSize = 0;
+  for (const entry of entries) {
+    const entryName = entry.entryName.replace(/\\/g, "/");
+    const segments = entryName.split("/");
+    if (
+      !entryName ||
+      entryName.includes("\0") ||
+      entryName.startsWith("/") ||
+      /^[a-z]:/i.test(entryName) ||
+      segments.some((segment) => segment === "..")
+    ) {
+      throw new Error("zip-invalid-path");
+    }
+
+    const entrySize = Number(entry.header.size);
+    if (!Number.isSafeInteger(entrySize) || entrySize < 0 || entrySize > MAX_ZIP_ENTRY_SIZE_BYTES) {
+      throw new Error("zip-entry-size-limit");
+    }
+    totalSize += entrySize;
+    if (totalSize > MAX_ZIP_TOTAL_SIZE_BYTES) throw new Error("zip-total-size-limit");
+
+    const unixMode = Number(entry.header.attr) >>> 16;
+    if ((unixMode & 0o170000) === 0o120000) throw new Error("zip-symlink-not-allowed");
+  }
+}
+
+function extractValidatedZip(zipPath: string, destination: string): void {
+  const zip = new AdmZip(zipPath);
+  validateZipEntries(zip);
+  zip.extractAllTo(destination, true);
+}
+
 async function detectServerCommandInDirectory(workdir: string): Promise<
   { ok: true; command: string; script: string; packageManager: string } | { ok: false; error: string }
 > {
@@ -2228,7 +2268,7 @@ async function prepareImportPlan(picked: string, interfaceSearchRoots: string[])
     let sourcePath: string;
     let projectNameOverride: string | undefined;
     if (picked.toLowerCase().endsWith(".zip")) {
-      new AdmZip(picked).extractAllTo(snapshotRoot, true);
+      extractValidatedZip(picked, snapshotRoot);
       sourcePath = snapshotRoot;
       projectNameOverride = basename(picked).replace(/\.zip$/i, "").trim() || undefined;
     } else {
@@ -2691,8 +2731,7 @@ export function registerProjectFsIpc(): void {
         const tmpRoot = join(tmpdir(), `df-import-${randomUUID()}`);
         await fs.mkdir(tmpRoot, { recursive: true });
         cleanupTmp = tmpRoot;
-        const zip = new AdmZip(picked);
-        zip.extractAllTo(tmpRoot, true);
+        extractValidatedZip(picked, tmpRoot);
         const found = await findProjectDirWithManifest(tmpRoot);
         if (!found) {
           let zipTitle = basename(picked);

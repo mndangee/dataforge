@@ -1,193 +1,181 @@
 [
   {
     "name": "@electron-toolkit/eslint-config-prettier",
-    "version": "^3.0.0",
+    "version": "3.0.0",
     "license": "MIT",
     "repository": "git+https://github.com/alex8088/electron-toolkit.git"
   },
   {
     "name": "@electron-toolkit/eslint-config-ts",
-    "version": "^3.1.0",
+    "version": "3.1.0",
     "license": "MIT",
     "repository": "git+https://github.com/alex8088/electron-toolkit.git"
   },
   {
     "name": "@electron-toolkit/preload",
-    "version": "^3.0.2",
+    "version": "3.0.2",
     "license": "MIT",
     "repository": "git+https://github.com/alex8088/electron-toolkit.git"
   },
   {
     "name": "@electron-toolkit/tsconfig",
-    "version": "^2.0.0",
+    "version": "2.0.0",
     "license": "MIT",
     "repository": "git+https://github.com/alex8088/electron-toolkit.git"
   },
   {
     "name": "@electron-toolkit/utils",
-    "version": "^4.0.0",
+    "version": "4.0.0",
     "license": "MIT",
     "repository": "git+https://github.com/alex8088/electron-toolkit.git"
   },
   {
     "name": "@tailwindcss/vite",
-    "version": "^4.2.1",
+    "version": "4.2.1",
     "license": "MIT",
     "repository": "https://github.com/tailwindlabs/tailwindcss.git"
   },
   {
     "name": "@types/adm-zip",
-    "version": "^0.5.8",
+    "version": "0.5.8",
     "license": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
   },
   {
     "name": "@types/node",
-    "version": "^22.19.1",
+    "version": "22.19.11",
     "license": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
   },
   {
     "name": "@types/react",
-    "version": "^19.2.7",
+    "version": "19.2.14",
     "license": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
   },
   {
     "name": "@types/react-dom",
-    "version": "^19.2.3",
+    "version": "19.2.3",
     "license": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
   },
   {
     "name": "@vitejs/plugin-react",
-    "version": "^5.1.1",
+    "version": "5.1.4",
     "license": "MIT",
     "repository": "git+https://github.com/vitejs/vite-plugin-react.git"
   },
   {
     "name": "adm-zip",
-    "version": "^0.5.17",
+    "version": "0.6.1",
     "license": "MIT",
     "repository": "https://github.com/cthackers/adm-zip.git"
   },
   {
     "name": "autoprefixer",
-    "version": "^10.4.24",
+    "version": "10.4.24",
     "license": "MIT",
     "repository": "postcss/autoprefixer"
   },
   {
     "name": "electron",
-    "version": "^39.2.6",
+    "version": "45.4.1",
     "license": "MIT",
     "repository": "https://github.com/electron/electron"
   },
   {
     "name": "electron-builder",
-    "version": "^26.0.12",
-    "license": "MIT",
-    "repository": "git+https://github.com/electron-userland/electron-builder.git"
-  },
-  {
-    "name": "electron-updater",
-    "version": "^6.3.9",
+    "version": "26.18.0",
     "license": "MIT",
     "repository": "git+https://github.com/electron-userland/electron-builder.git"
   },
   {
     "name": "electron-vite",
-    "version": "^5.0.0",
+    "version": "5.0.0",
     "license": "MIT",
     "repository": "git+https://github.com/alex8088/electron-vite.git"
   },
   {
     "name": "eslint",
-    "version": "^9.39.1",
+    "version": "9.39.3",
     "license": "MIT",
     "repository": "eslint/eslint"
   },
   {
     "name": "eslint-plugin-react",
-    "version": "^7.37.5",
+    "version": "7.37.5",
     "license": "MIT",
     "repository": "https://github.com/jsx-eslint/eslint-plugin-react"
   },
   {
     "name": "eslint-plugin-react-hooks",
-    "version": "^7.0.1",
+    "version": "7.0.1",
     "license": "MIT",
     "repository": "https://github.com/facebook/react.git"
   },
   {
     "name": "eslint-plugin-react-refresh",
-    "version": "^0.4.24",
+    "version": "0.4.26",
     "license": "MIT",
     "repository": "github:ArnaudBarre/eslint-plugin-react-refresh"
   },
   {
     "name": "jszip",
-    "version": "^3.10.1",
+    "version": "3.10.2",
     "license": "(MIT OR GPL-3.0-or-later)",
     "repository": "https://github.com/Stuk/jszip.git"
   },
   {
     "name": "postcss",
-    "version": "^8.5.6",
+    "version": "8.5.33",
     "license": "MIT",
     "repository": "postcss/postcss"
   },
   {
-    "name": "pptxgenjs",
-    "version": "^4.0.1",
-    "license": "MIT",
-    "repository": "git+https://github.com/gitbrent/PptxGenJS.git"
-  },
-  {
     "name": "prettier",
-    "version": "^3.7.4",
+    "version": "3.8.1",
     "license": "MIT",
     "repository": "prettier/prettier"
   },
   {
     "name": "prettier-plugin-tailwindcss",
-    "version": "^0.7.2",
+    "version": "0.7.2",
     "license": "MIT",
     "repository": "https://github.com/tailwindlabs/prettier-plugin-tailwindcss"
   },
   {
     "name": "react",
-    "version": "^18.3.1",
+    "version": "18.3.1",
     "license": "MIT",
     "repository": "https://github.com/facebook/react.git"
   },
   {
     "name": "react-dom",
-    "version": "^18.3.1",
+    "version": "18.3.1",
     "license": "MIT",
     "repository": "https://github.com/facebook/react.git"
   },
   {
     "name": "react-textarea-autosize",
-    "version": "^8.5.9",
+    "version": "8.5.9",
     "license": "MIT",
     "repository": "git+https://github.com/Andarist/react-textarea-autosize.git"
   },
   {
     "name": "tailwindcss",
-    "version": "^4.1.18",
+    "version": "4.2.1",
     "license": "MIT",
     "repository": "https://github.com/tailwindlabs/tailwindcss.git"
   },
   {
     "name": "typescript",
-    "version": "^5.9.3",
+    "version": "5.9.3",
     "license": "Apache-2.0",
     "repository": "https://github.com/microsoft/TypeScript.git"
   },
   {
     "name": "vite",
-    "version": "^7.2.6",
+    "version": "7.3.8",
     "license": "MIT",
     "repository": "git+https://github.com/vitejs/vite.git"
   }

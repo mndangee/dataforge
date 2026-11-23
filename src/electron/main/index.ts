@@ -20,6 +20,15 @@ let startupInitialization: Promise<void> = Promise.resolve();
 let mainWindow: BrowserWindow | null = null;
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
 
+function isAllowedExternalUrl(rawUrl: string): boolean {
+  try {
+    const protocol = new URL(rawUrl).protocol;
+    return protocol === "https:" || protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -30,7 +39,10 @@ function createWindow(): void {
     autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
-      sandbox: false,
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+      webSecurity: true,
     },
   });
 
@@ -39,8 +51,15 @@ function createWindow(): void {
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
+    if (isAllowedExternalUrl(details.url)) void shell.openExternal(details.url);
     return { action: "deny" };
+  });
+
+  mainWindow.webContents.on("will-navigate", (event, targetUrl) => {
+    const currentUrl = mainWindow?.webContents.getURL();
+    if (currentUrl && targetUrl === currentUrl) return;
+    event.preventDefault();
+    if (isAllowedExternalUrl(targetUrl)) void shell.openExternal(targetUrl);
   });
 
   // HMR for renderer base on electron-vite cli.

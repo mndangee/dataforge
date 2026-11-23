@@ -9,8 +9,9 @@ const deps = { ...packageJson.dependencies, ...packageJson.devDependencies }
 const nodeModules = path.join(__dirname, '..', 'node_modules')
 const result = []
 
-for (const [name, version] of Object.entries(deps)) {
+for (const [name, declaredVersion] of Object.entries(deps)) {
   const pkgDir = path.join(nodeModules, name)
+  let version = declaredVersion
   let license = ''
   let repository = ''
   try {
@@ -19,6 +20,7 @@ for (const [name, version] of Object.entries(deps)) {
       const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
       license = pkg.license || (Array.isArray(pkg.licenses) ? pkg.licenses.map((l) => l.type).join(', ') : '') || '-'
       repository = typeof pkg.repository === 'object' ? pkg.repository?.url : pkg.repository || ''
+      version = pkg.version || version
     }
   } catch {
     license = '-'
