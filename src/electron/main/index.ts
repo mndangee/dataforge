@@ -18,7 +18,47 @@ type StartupRecoveryNotice = { type: "success" | "error"; message: string };
 let startupRecoveryNotice: StartupRecoveryNotice | null = null;
 let startupInitialization: Promise<void> = Promise.resolve();
 let mainWindow: BrowserWindow | null = null;
+let startupWindow: BrowserWindow | null = null;
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
+
+const STARTUP_SCREEN_HTML = `<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f7f9fc;
+        color: #222;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+        user-select: none;
+      }
+      main { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+      .brand { font-size: 24px; font-weight: 750; letter-spacing: -0.5px; }
+      .status { display: flex; align-items: center; gap: 10px; color: #667085; font-size: 13px; font-weight: 600; }
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #cfe0ff;
+        border-top-color: #0057ff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <main role="status" aria-live="polite">
+      <div class="brand">DataForge</div>
+      <div class="status"><span class="spinner" aria-hidden="true"></span><span>프로그램을 준비하고 있습니다</span></div>
+    </main>
+  </body>
+</html>`;
 
 function isAllowedExternalUrl(rawUrl: string): boolean {
   try {
@@ -30,11 +70,28 @@ function isAllowedExternalUrl(rawUrl: string): boolean {
 }
 
 function createWindow(): void {
-  // Create the browser window.
+  startupWindow = new BrowserWindow({
+    width: 360,
+    height: 220,
+    show: false,
+    frame: false,
+    resizable: false,
+    backgroundColor: "#f7f9fc",
+    autoHideMenuBar: true,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+  startupWindow.once("ready-to-show", () => startupWindow?.show());
+  void startupWindow.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(STARTUP_SCREEN_HTML)}`);
+
+  // 메인 화면은 렌더링을 마친 뒤 표시해 시작 중 흰 화면이 노출되지 않게 합니다.
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    show: true,
+    show: false,
     backgroundColor: "#fafafa",
     autoHideMenuBar: true,
     webPreferences: {
@@ -47,7 +104,22 @@ function createWindow(): void {
   });
 
   mainWindow.on("closed", () => {
+    startupWindow?.close();
+    startupWindow = null;
     mainWindow = null;
+  });
+
+  mainWindow.once("ready-to-show", () => {
+    startupWindow?.close();
+    startupWindow = null;
+    mainWindow?.show();
+    mainWindow?.focus();
+  });
+
+  mainWindow.webContents.once("did-fail-load", () => {
+    startupWindow?.close();
+    startupWindow = null;
+    mainWindow?.show();
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -78,6 +150,11 @@ if (!hasSingleInstanceLock) {
   app.quit();
 } else {
   app.on("second-instance", () => {
+    if (startupWindow && !startupWindow.isDestroyed()) {
+      startupWindow.show();
+      startupWindow.focus();
+      return;
+    }
     if (!mainWindow) return;
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.show();
