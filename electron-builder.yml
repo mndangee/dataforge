@@ -12,11 +12,13 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: proxy
+  # `proxy.exe`는 다른 프록시·보안 프로그램과 이름이 겹쳐 설치 프로그램이
+  # 무관한 프로세스를 DataForge로 오인할 수 있으므로 고유한 이름을 사용합니다.
+  executableName: DataForge
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
-  shortcutName: ${productName}
-  uninstallDisplayName: ${productName}
+  artifactName: DataForge-${version}-setup.${ext}
+  shortcutName: DataForge
+  uninstallDisplayName: DataForge
   createDesktopShortcut: always
 mac:
   hardenedRuntime: true
