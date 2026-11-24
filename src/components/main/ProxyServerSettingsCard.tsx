@@ -470,12 +470,9 @@ export default function ProxyServerSettingsCard({ onClose, onBusyChange }: Proxy
 
       <section className={`rounded-4 mt-4 border bg-white p-4 shadow-sm ${overall === "healthy" ? "border-emerald-200" : overall === "checking" ? "border-amber-200" : overall === "error" ? "border-red-200" : "border-gray-200"}`}>
         <div className="flex items-center justify-between gap-4">
-          <div className="flex min-w-0 flex-1 items-start gap-2">
-            <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${overall === "healthy" ? "bg-emerald-500" : overall === "checking" ? "bg-amber-500" : overall === "error" ? "bg-red-500" : "bg-gray-300"}`} />
-            <div className="min-w-0 flex-1">
-              <p className={`typo-body-1-normal font-semibold ${overall === "healthy" ? "text-label-normal" : overall === "checking" ? "text-amber-800" : overall === "error" ? "text-red-800" : "text-label-normal"}`}>{overallTitle}</p>
-              <p className="typo-body-2-normal text-label-assistant mt-1">{diagnostics?.summary || runtimeError || "현재 서버 포트를 확인하고 연결을 시작해 주세요."}</p>
-            </div>
+          <div className="min-w-0 flex-1">
+            <p className={`typo-body-1-normal font-semibold ${overall === "healthy" ? "text-label-normal" : overall === "checking" ? "text-amber-800" : overall === "error" ? "text-red-800" : "text-label-normal"}`}>{overallTitle}</p>
+            <p className="typo-body-2-normal text-label-assistant mt-1">{diagnostics?.summary || runtimeError || "현재 서버 포트를 확인하고 연결을 시작해 주세요."}</p>
           </div>
           {diagnostics ? (
           <button type="button" className="typo-caption-1 text-label-neutral hover:text-label-normal shrink-0 cursor-pointer font-semibold underline underline-offset-4" onClick={() => setDiagnosticsOpen((open) => !open)}>
@@ -532,12 +529,12 @@ export default function ProxyServerSettingsCard({ onClose, onBusyChange }: Proxy
             <div className="grid grid-cols-2 items-start gap-4">
             <label className="block">
               <span className="typo-body-2-normal text-label-normal font-medium">서버 이동 포트</span>
-              <p className="typo-caption-1 text-label-assistant mt-1 mb-2">자동으로 설정됩니다. 다른 프로그램과 충돌할 때만 변경하세요.</p>
+              <p className="typo-caption-1 text-label-assistant mt-1 mb-2">자동으로 설정됩니다. 다른 프로그램과 충돌할 때만 변경</p>
               <Input value={upstreamPortDraft} width="100%" size="small" disabled={saveBusy || running} error={Boolean(error?.fields?.includes("upstreamPort"))} onChange={(event) => { setUpstreamPortDraft(event.target.value); clearError(); }} />
             </label>
             <label className="block">
               <span className="typo-body-2-normal text-label-normal font-medium">더미 서버 내부 포트</span>
-              <p className="typo-caption-1 text-label-assistant mt-1 mb-2">다른 프로그램과 충돌할 때만 변경하세요.</p>
+              <p className="typo-caption-1 text-label-assistant mt-1 mb-2">다른 프로그램과 충돌할 때만 변경</p>
               <Input value={mockPortDraft} width="100%" size="small" disabled={saveBusy || running} error={Boolean(error?.fields?.includes("mockPort"))} onChange={(event) => { setMockPortDraft(event.target.value); clearError(); }} />
             </label>
             </div>

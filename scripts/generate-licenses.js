@@ -8,6 +8,14 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 const deps = { ...packageJson.dependencies, ...packageJson.devDependencies }
 const nodeModules = path.join(__dirname, '..', 'node_modules')
 const result = []
+const bundledAssets = [
+  {
+    name: 'Pretendard Variable',
+    version: '1.3.9',
+    license: 'OFL-1.1',
+    repository: 'https://github.com/orioncactus/pretendard',
+  },
+]
 
 for (const [name, declaredVersion] of Object.entries(deps)) {
   const pkgDir = path.join(nodeModules, name)
@@ -27,6 +35,8 @@ for (const [name, declaredVersion] of Object.entries(deps)) {
   }
   result.push({ name, version, license, repository })
 }
+
+result.push(...bundledAssets)
 
 result.sort((a, b) => a.name.localeCompare(b.name))
 
