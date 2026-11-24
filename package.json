@@ -1,6 +1,6 @@
 {
   "name": "proxy",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "An Electron application with React and TypeScript",
   "license": "UNLICENSED",
   "engines": {
