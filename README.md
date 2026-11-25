@@ -39,7 +39,7 @@ DEMO_API0002_1080_Test.json
 가져오기 과정에서 모듈 파일의 다음 형식을 찾아 트랜 정보와 연결합니다.
 
 ```js
-getRsrvList: {
+fetchSampleList: {
   tranId: "DEMO.API0001",
   desc: "샘플 목록 조회",
 }
@@ -48,7 +48,7 @@ getRsrvList: {
 연결 결과:
 
 ```text
-API 이름: getRsrvList
+API 이름: fetchSampleList
 트랜 ID: DEMO.API0001
 설명: 샘플 목록 조회
 ```
@@ -150,6 +150,14 @@ Electron의 `app.getPath("userData")` 아래에 저장합니다.
 
 순수 브라우저 환경에서는 일부 데이터가 localStorage에 저장되지만, 파일 가져오기와 프록시 제어는 Electron 앱에서만 사용할 수 있습니다.
 
+## 개인정보와 보안
+
+- DataForge는 로컬에서 실행되며 사용 통계나 프로젝트 데이터를 외부 서버로 전송하지 않습니다.
+- 가져온 JSON과 프로젝트 경로는 운영체제의 사용자 데이터 폴더에만 저장됩니다.
+- 저장소의 문서와 예시는 모두 가상 프로젝트 및 `DEMO.API0001` 형식을 사용합니다.
+- 실제 고객 데이터, 사내 주소, 인증정보 또는 운영 응답을 저장소와 이슈에 첨부하지 마세요.
+- 외부에 배포할 때는 운영체제 코드 서명과 배포 파일의 SHA-256 검증을 권장합니다.
+
 ## 개발 환경 실행
 
 요구 사항:
@@ -192,7 +200,7 @@ npm run build:linux
 
 ## 서명하지 않은 macOS 앱 배포
 
-Apple 개발자 인증서 없이 사내·테스트용 앱을 만들 수 있습니다.
+Apple 개발자 인증서 없이 로컬 테스트용 앱을 만들 수 있습니다.
 
 ```bash
 npm run bundle:mac:unsigned:arm64 # Apple Silicon
@@ -224,12 +232,19 @@ src/
 └── types/                # 공통 타입
 ```
 
+## 개발 과정
+
+DataForge가 단순 JSON 저장 도구에서 포트 전환, 실제 서버 폴백, 조건별 응답과 크로스 플랫폼 배포를 지원하는 프록시로 발전한 과정은 [개발 과정 문서](docs/development-history.md)에 정리했습니다.
+
+공개 저장소의 커밋은 작성자와 작성 시각, 기능별 메시지를 유지해 실제 설계와 개선 흐름을 확인할 수 있도록 관리합니다.
+
 ## 테스트 문서
 
 - [프록시 최종 테스트 시나리오](docs/proxy-end-to-end-test-scenarios.md)
 - [수동 테스트 시나리오](docs/manual-test-scenarios.md)
 - [프로젝트 전체 동작 가이드](docs/project-full-flow-usage.md)
 - [데이터 라이프사이클 가이드](docs/data-lifecycle-guide.md)
+- [트랜잭션 프로필 연동 예시](docs/transaction-profile-proxy.md)
 
 포트 상태 확인:
 

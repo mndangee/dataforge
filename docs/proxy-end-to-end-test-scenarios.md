@@ -19,7 +19,7 @@
 | 프로젝트 서버 이동 포트 | `7778` |
 | 더미 서버 내부 포트 | `4780` |
 | 프로젝트 서버 폴더 | `/path/to/sample-project/server` |
-| 테스트 페이지 | `http://localhost:7777/sample-project/mobile/service/sample/index.html?state=Home` |
+| 테스트 페이지 | `http://localhost:7777/sample/index.html?state=Home` |
 
 다른 값을 사용하는 경우 문서의 포트와 경로를 실제 환경에 맞게 바꿔서 진행합니다.
 

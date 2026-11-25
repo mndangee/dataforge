@@ -48,7 +48,7 @@ export function stopUpstreamSpawn(): void {
 }
 
 /**
- * 업스트림이 `dummy.server.js -port` 패턴인 경우(sample-project server 등).
+ * 업스트림이 `dummy.server.js -port` 패턴인 경우.
  * `npm run` 전용 프로젝트는 해당 스크립트에서 upstream 포트를 맞추면 됨.
  */
 export async function applyUpstreamSpawnFromConfig(): Promise<void> {

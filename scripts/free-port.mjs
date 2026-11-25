@@ -40,5 +40,5 @@ for (const pid of pids) {
   }
 }
 console.log(
-  "완료. 이후 순서: (1) DataForge 실행 — 모의 서버·Project 게이트웨이 켜기 (2) Project: cd sample-project/server && node dummy.server.js -port 7778",
+  "완료. 이후 순서: (1) DataForge 실행 및 게이트웨이 연결 (2) 필요하면 프로젝트 서버를 이동 포트에서 실행",
 );

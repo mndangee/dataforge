@@ -32,7 +32,7 @@ function getNodeMajor(versionDir: string): number {
 }
 
 /**
- * sample-project/server 계열은 구버전 Node 호환성이 필요한 경우가 있어
+ * metadata/server 계열은 구버전 Node 호환성이 필요한 경우가 있어
  * 자동 선택 시 안정 우선 순위(16 → 18 → 20)를 먼저 시도한다.
  */
 function sortPreferredForUpstream(names: string[]): string[] {
@@ -87,7 +87,7 @@ function tryNvmNodeBinUnix(): string | null {
   return null;
 }
 
-/** Project dummy.server.js 호환용 — 설치된 NVM 중 해당 메이저 최신 패치 */
+/** 프로젝트 서버 호환용 — 설치된 NVM 중 해당 메이저 최신 패치 */
 function tryNvmLatestMajorUnix(major: number): string | null {
   const root = getNvmVersionsNodeRootUnix();
   const dirs = listNvmVersionDirNamesUnix().filter((d) => getNodeMajor(d) === major);

@@ -1,12 +1,12 @@
 /**
- * Project `api-metadata.js` 내 `interfaces` 항목에서 tranId·desc 추출.
+ * 연결된 프로젝트의 메타데이터 파일에서 `tranId`·`desc`를 추출합니다.
  * `key: { tranId: '...', desc: '...' [, 추가필드] }` 형태를 가정.
  * (프로젝트/JSON 가져오기 시 응답 본문에서도 동일 패턴을 스캔해 API 이름·설명에 반영.)
  */
 
 export type ApiMetadataEntry = { key: string; tranId: string; desc: string };
 
-/** proxy·Metadata 간 tranId 비교용 (공백·NBSP 정리 후 대문자 통일) */
+/** 저장 데이터와 메타데이터 간 tranId 비교용 (공백·NBSP 정리 후 대문자 통일) */
 export function normalizeTranIdKey(s: string): string {
   return s
     .trim()
@@ -33,7 +33,7 @@ function mergeByTranIdFirstWins(entries: ApiMetadataEntry[]): ApiMetadataEntry[]
   return out;
 }
 
-/** `{ "callName": { "tranId": "VD.x", "desc": "…" } }` 최상위 객체 */
+/** `{ "callName": { "tranId": "DEMO.API0001", "desc": "…" } }` 최상위 객체 */
 function parseTopLevelJsonInterfaces(source: string): ApiMetadataEntry[] {
   const t = source.trim();
   if (!t.startsWith("{")) return [];
@@ -128,7 +128,7 @@ export function buildTransactionMetadataLookup(entries: ApiMetadataEntry[]): Map
   return lookup;
 }
 
-/** proxy 행의 트랜(`tran`) 또는 API이름(`name`)이 sample-project `tranId`와 맞으면 해당 API metadata 항목 반환 */
+/** proxy 행의 트랜(`tran`) 또는 API이름(`name`)이 metadata `tranId`와 맞으면 해당 metadata 항목 반환 */
 export function findMetadataForApi(
   lookup: Map<string, ApiMetadataEntry>,
   row: { tran: string; name: string },
@@ -136,8 +136,8 @@ export function findMetadataForApi(
   for (const candidate of [row.tran, row.name]) {
     const v = candidate.trim();
     if (!v) continue;
-    const sample-project = lookup.get(v) ?? lookup.get(normalizeTranIdKey(v));
-    if (sample-project) return sample-project;
+    const metadata = lookup.get(v) ?? lookup.get(normalizeTranIdKey(v));
+    if (metadata) return metadata;
   }
   return undefined;
 }

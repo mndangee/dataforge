@@ -73,27 +73,27 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
     fallbackSpawnLastError = `업스트림 자동 실행: Node 실행 파일을 찾을 수 없습니다: ${nodeBin}`;
     return;
   }
-  let carePort =
+  let upstreamPort =
     typeof ps.upstreamServerPort === "number" && Number.isFinite(ps.upstreamServerPort)
       ? Math.floor(ps.upstreamServerPort)
       : typeof ps.legacyUpstreamServerPort === "number" && Number.isFinite(ps.legacyUpstreamServerPort)
         ? Math.floor(ps.legacyUpstreamServerPort)
         : 7778;
-  carePort = Math.min(65535, Math.max(1, carePort));
+  upstreamPort = Math.min(65535, Math.max(1, upstreamPort));
 
-  if (carePort === ps.port) {
-    fallbackSpawnLastError = `업스트림 자동 실행 포트(${carePort})는 모의 서버 포트와 같을 수 없습니다.`;
+  if (upstreamPort === ps.port) {
+    fallbackSpawnLastError = `업스트림 자동 실행 포트(${upstreamPort})는 모의 서버 포트와 같을 수 없습니다.`;
     return;
   }
-  if (ig?.enabled && carePort === ig.clientPort) {
-    fallbackSpawnLastError = `업스트림 자동 실행 포트(${carePort})는 게이트웨이 클라이언트 포트와 같을 수 없습니다.`;
+  if (ig?.enabled && upstreamPort === ig.clientPort) {
+    fallbackSpawnLastError = `업스트림 자동 실행 포트(${upstreamPort})는 게이트웨이 클라이언트 포트와 같을 수 없습니다.`;
     return;
   }
   const cmdRaw = (ps.upstreamServerCommand ?? "").trim();
   let child: ChildProcess;
   let execDesc = "";
   if (cmdRaw) {
-    const cmd = cmdRaw.replace(/\{\{\s*port\s*\}\}/gi, String(carePort)).replace(/\{\{\s*node\s*\}\}/gi, nodeBin);
+    const cmd = cmdRaw.replace(/\{\{\s*port\s*\}\}/gi, String(upstreamPort)).replace(/\{\{\s*node\s*\}\}/gi, nodeBin);
     if (process.platform === "win32") {
       const comSpec = process.env.ComSpec?.trim() || join(process.env.SystemRoot || "C:\\Windows", "System32", "cmd.exe");
       child = spawn(comSpec, ["/d", "/s", "/c", cmd], {
@@ -119,8 +119,8 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
     }
     const igClientPort =
       ig && typeof ig.clientPort === "number" && Number.isFinite(ig.clientPort) ? Math.min(65535, Math.max(1, Math.floor(ig.clientPort))) : 7779;
-    const injectDataforgeProxy = Boolean(ig?.enabled) && igClientPort !== carePort;
-    child = spawn(nodeBin, ["dummy.server.js", "-port", String(carePort)], {
+    const injectDataforgeProxy = Boolean(ig?.enabled) && igClientPort !== upstreamPort;
+    child = spawn(nodeBin, ["dummy.server.js", "-port", String(upstreamPort)], {
       cwd: dir,
       env: {
         ...process.env,
@@ -132,8 +132,8 @@ export async function applyFallbackSpawnFromConfig(mockServerListening: boolean)
       windowsHide: true,
     });
     execDesc = injectDataforgeProxy
-      ? `DATAFORGE_GATEWAY_ENABLED=1 DATAFORGE_GATEWAY_PORT=${igClientPort} ${nodeBin} dummy.server.js -port ${carePort}`
-      : `${nodeBin} dummy.server.js -port ${carePort}`;
+      ? `DATAFORGE_GATEWAY_ENABLED=1 DATAFORGE_GATEWAY_PORT=${igClientPort} ${nodeBin} dummy.server.js -port ${upstreamPort}`
+      : `${nodeBin} dummy.server.js -port ${upstreamPort}`;
   }
 
   fallbackChild = child;

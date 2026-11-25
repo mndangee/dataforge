@@ -1471,7 +1471,7 @@ export async function updateProjectApiEndpoint(
 }
 
 /**
- * 연동 프로젝트의 `api-metadata.js`(interfaces)와 비교해,
+ * 연동 프로젝트의 `Metadata.module.js`(interfaces)와 비교해,
  * proxy API의 **트랜(`tran`) 또는 API 이름(`name`)** 이 모듈 `tranId`와 같으면(공백·대소문자 무시)
  * `name`을 module **키**, `description`을 **desc**로 맞춤.
  * Electron + 절대 경로가 있으면 한 번에 디스크 반영; 그 외에는 파일 내용(`sourceText`)으로 갱신.
@@ -1521,10 +1521,10 @@ export async function syncProjectApisFromMetadata(
   const skipped: string[] = [];
 
   for (const e of endpoints) {
-    const sample-project = findMetadataForApi(metadataLookup, e);
-    if (!sample-project) continue;
-    const nk = sample-project.key.trim();
-    const desc = sample-project.desc.trim() || e.description.trim();
+    const metadata = findMetadataForApi(metadataLookup, e);
+    if (!metadata) continue;
+    const nk = metadata.key.trim();
+    const desc = metadata.desc.trim() || e.description.trim();
     if (e.name.trim() === nk && e.description.trim() === desc) continue;
     const r = await updateProjectApiEndpoint(projectId, e.id, {
       method: e.method,

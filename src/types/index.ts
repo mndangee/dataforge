@@ -9,7 +9,7 @@ export interface LinkedClientEntry {
 
 /**
  * 외부 프로젝트가 호출하는 API URL(포트) 앞단에서 저장 응답을 주입하는 게이트웨이.
- * Project뿐 아니라 동일한 HTTP 프록시 패턴이면 어떤 백엔드에도 쓸 수 있음.
+ * 특정 프로젝트뿐 아니라 동일한 HTTP 프록시 패턴이면 어떤 백엔드에도 쓸 수 있음.
  */
 export interface AppProxyInterceptGatewayConfig {
   enabled: boolean

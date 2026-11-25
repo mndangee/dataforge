@@ -223,7 +223,7 @@ function looksLikeTransactionFormUrlEncoded(rawBody: string, contentType: string
   return s.startsWith("header=") && /(^|&)body=/.test(rawBody);
 }
 
-/** Project `POST /api` 본문(header JSON)에서 tranId 추출 */
+/** `POST /api` 본문(header JSON)에서 tranId 추출 */
 function tranIdFromGatewayBody(rawBody: string, contentType: string): string | null {
   const ct = (contentType || "").toLowerCase();
   try {
@@ -590,7 +590,7 @@ function expandMockPathKeys(pathKey: string, tranAliases?: Record<string, string
 /**
  * URL 경로 키(예: DEMO.API0001, fetchSampleData, DEMO.API0001.do)에 맞는
  * `responses-store.json`의 `byApiName` 키를 찾아 설정 응답 JSON을 반환.
- * API metadata 동기화 후 스토어 키가 영문키만 있어도, 트랜 ID로 호출되면 index에서 매핑한다.
+ * metadata 동기화 후 스토어 키가 영문키만 있어도, 트랜 ID로 호출되면 index에서 매핑한다.
  */
 async function findRawConfigurationFromProjects(
   projectRoots: string[],
@@ -656,7 +656,7 @@ function expandUserConfigPath(raw: string): string {
   return t;
 }
 
-/** sample-project dummy/sample/{tran}.json 전용 — 경로 조작 방지 */
+/** metadata dummy/sample/{tran}.json 전용 — 경로 조작 방지 */
 function isSafeResponseBasename(name: string): boolean {
   if (!name || name.length > 160) return false;
   if (name.includes("..") || name.includes("/") || name.includes("\\")) return false;

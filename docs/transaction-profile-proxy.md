@@ -1,4 +1,4 @@
-# 샘플 데이터 발행(fetchSampleData · DEMO.API0001) — 프록시를 사용할 프로젝트 연동 예시
+# 샘플 데이터 조회(fetchSampleData · DEMO.API0001) — 프록시를 사용할 프로젝트 연동 예시
 
 목표는 `SamplePage.js`의 `btnConfirm` 클릭으로 발생하는 `fetchSampleData`(`tranId: DEMO.API0001`) 호출에서, 연동 프로젝트의 로컬 더미(`server/dummy`)가 아니라 DataForge(proxy)에 저장한 응답을 보이게 하는 것입니다.
 
@@ -22,7 +22,7 @@
 ```json
 {
   "resultCd": "S",
-  "resultMsg": "샘플 데이터이 등록되었습니다"
+  "resultMsg": "샘플 데이터를 반환했습니다"
 }
 ```
 
@@ -47,7 +47,7 @@
 {
   "responseMessage": {
     "header": { "tranId": "DEMO.API0001" },
-    "body": "{\"resultCd\":\"S\",\"resultMsg\":\"샘플 데이터이 등록되었습니다\"}"
+    "body": "{\"resultCd\":\"S\",\"resultMsg\":\"샘플 데이터를 반환했습니다\"}"
   }
 }
 ```

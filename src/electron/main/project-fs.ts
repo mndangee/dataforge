@@ -1124,19 +1124,19 @@ async function validateImportJsonFile(filePath: string, fileLabel = basename(fil
 
 type ServerDumpFileMeta = { tran: string; sourceId: string; label: string };
 
-/** `DEMO_API0001_1710_설명.json` 및 기존 서버의 구분자 변형을 공통 트랜 형식으로 정규화합니다. */
+/** `DEMO_API0001_1710_설명.json` 같은 파일명을 공통 트랜 형식으로 정규화합니다. */
 function parseServerDumpFileName(fileName: string): ServerDumpFileMeta | null {
   const stem = fileName.replace(/\.json$/i, "").normalize("NFC").trim();
-  const match = /^VD(?:[_.]+VD)?[_.]+([A-Z][A-Z0-9]*?)_(\d+)(?:_(.*))?$/i.exec(stem);
-  if (!match?.[1] || !match[2]) return null;
-  const label = (match[3] ?? "")
+  const match = /^([A-Z][A-Z0-9]*)[_.]+([A-Z][A-Z0-9]*)[_.]+(\d+)(?:_(.*))?$/i.exec(stem);
+  if (!match?.[1] || !match[2] || !match[3]) return null;
+  const label = (match[4] ?? "")
     .replace(/_+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
   return {
-    tran: `VD.${match[1]}`,
-    sourceId: match[2],
-    label: label || `응답 ${match[2]}`,
+    tran: `${match[1].toUpperCase()}.${match[2].toUpperCase()}`,
+    sourceId: match[3],
+    label: label || `응답 ${match[3]}`,
   };
 }
 
@@ -1254,7 +1254,7 @@ function ancestorDirsScanOrderForInterfaces(startDir: string, maxUp: number): st
 }
 
 /**
- * Project 레포: 더미 JSON은 `server/dummy`에만 있고 `api-metadata.js`는 형제 `common/core`에 있음.
+ * 응답 JSON과 API 메타데이터가 서로 다른 상위 폴더에 있는 프로젝트도 탐색합니다.
  * 상위 디렉터리 체인만 쓰면 `common/core`가 빠지므로, 각 조상 `d`에 대해 `d/common/core`가 있으면 바로 다음에 스캔한다.
  */
 async function expandMetadataSearchDirs(chain: string[]): Promise<string[]> {
@@ -1379,11 +1379,11 @@ function inferImportedJsonApiMeta(
     }
   }
   if (metadataLookup && metadataLookup.size > 0) {
-    const sample-project = findMetadataForApi(metadataLookup, { tran: fallbackApiKey, name: fallbackApiKey });
-    if (sample-project) {
-      const name = sample-project.key.trim();
-      const tran = sample-project.tranId.trim() || fallbackApiKey.trim();
-      const desc = sample-project.desc.trim() || fallbackDescription;
+    const metadata = findMetadataForApi(metadataLookup, { tran: fallbackApiKey, name: fallbackApiKey });
+    if (metadata) {
+      const name = metadata.key.trim();
+      const tran = metadata.tranId.trim() || fallbackApiKey.trim();
+      const desc = metadata.desc.trim() || fallbackDescription;
       if (name && isSafeProjectFolderName(name)) {
         return { apiKey: name, tran, description: desc, metadataMatched: true };
       }
@@ -1420,12 +1420,12 @@ async function enrichProjectApisFromNearbyInterfaceFiles(projectRoot: string): P
 
   for (let i = 0; i < items.length; i++) {
     const row = items[i]!;
-    const sample-project = findMetadataForApi(metadataLookup, row);
-    if (!sample-project) continue;
+    const metadata = findMetadataForApi(metadataLookup, row);
+    if (!metadata) continue;
 
-    const newName = sample-project.key.trim();
-    const newDesc = sample-project.desc.trim() || row.description.trim();
-    const newTran = sample-project.tranId.trim() || row.tran.trim();
+    const newName = metadata.key.trim();
+    const newDesc = metadata.desc.trim() || row.description.trim();
+    const newTran = metadata.tranId.trim() || row.tran.trim();
     const oldName = row.name.trim();
 
     if (row.name.trim() === newName && row.description.trim() === newDesc && row.tran.trim() === newTran) continue;
@@ -1850,10 +1850,10 @@ async function importLooseJsonFolderAsProject(
     for (const [tran, group] of grouped) {
       const responses = assignServerDumpResponseTypes(group.responses);
       const apiUpdatedIso = await maxPathMtimeIso(group.paths, now);
-      const sample-project = findMetadataForApi(globalMetadataLookup, { tran, name: tran });
-      const mappedApiName = sample-project?.key.trim() || tran;
-      const mappedTran = sample-project?.tranId.trim() || tran;
-      const mappedDescription = sample-project?.desc.trim() || `서버 더미 데이터 · 응답 ${responses.length}개`;
+      const metadata = findMetadataForApi(globalMetadataLookup, { tran, name: tran });
+      const mappedApiName = metadata?.key.trim() || tran;
+      const mappedTran = metadata?.tranId.trim() || tran;
+      const mappedDescription = metadata?.desc.trim() || `서버 더미 데이터 · 응답 ${responses.length}개`;
       if (usedApiKeys.has(mappedApiName)) {
         skippedFileCount += group.responses.length;
         for (const response of group.responses) {
@@ -1874,7 +1874,7 @@ async function importLooseJsonFolderAsProject(
       importedResponseCount += responses.length;
       for (const response of responses) fileResults.push({ fileName: response.source?.fileName ?? tran, status: "imported" });
       usedApiKeys.add(mappedApiName);
-      if (sample-project) metadataMappedApiCount += 1;
+      if (metadata) metadataMappedApiCount += 1;
       else metadataUnmappedTrans.push(mappedTran);
     }
   }
@@ -3116,12 +3116,12 @@ export function registerProjectFsIpc(): void {
 
       for (let i = 0; i < items.length; i++) {
         const row = items[i]!;
-        const sample-project = findMetadataForApi(metadataLookup, row);
-        if (!sample-project) continue;
+        const metadata = findMetadataForApi(metadataLookup, row);
+        if (!metadata) continue;
         const t = row.tran.trim() || row.name.trim();
 
-        const newName = sample-project.key.trim();
-        const newDesc = sample-project.desc.trim() || row.description.trim();
+        const newName = metadata.key.trim();
+        const newDesc = metadata.desc.trim() || row.description.trim();
         const oldName = row.name.trim();
 
         if (row.name.trim() === newName && row.description.trim() === newDesc) continue;
