@@ -8,13 +8,13 @@
   },
   "main": "./out/main/index.js",
   "author": "example.com",
-  "homepage": "https://github.com/mndangee/proxy#readme",
+  "homepage": "https://github.com/mndangee/dataforge#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mndangee/proxy.git"
+    "url": "https://github.com/mndangee/dataforge.git"
   },
   "bugs": {
-    "url": "https://github.com/mndangee/proxy/issues"
+    "url": "https://github.com/mndangee/dataforge/issues"
   },
   "scripts": {
     "format": "prettier --write .",

@@ -35,8 +35,8 @@ DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·�
 
 ### 문서
 
-- [README](https://github.com/mndangee/proxy/blob/main/README.md) — 설치·빌드·다운로드 표
-- [프로젝트 전체 동작 가이드](https://github.com/mndangee/proxy/blob/main/docs/project-full-flow-usage.md)
+- [README](https://github.com/mndangee/dataforge/blob/main/README.md) — 설치·빌드·다운로드 표
+- [프로젝트 전체 동작 가이드](https://github.com/mndangee/dataforge/blob/main/docs/project-full-flow-usage.md)
 
 ### Node 관련 (사용자 안내)
 
@@ -46,8 +46,8 @@ DataForge(Proxy) 데스크톱 빌드 — 로컬 모의 API·프록시 설정·�
 ### 소스에서 빌드하려면
 
 ```bash
-git clone https://github.com/mndangee/proxy.git
-cd proxy
+git clone https://github.com/mndangee/dataforge.git
+cd dataforge
 npm install
 npm run build:release
 ```

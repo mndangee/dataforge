@@ -166,8 +166,8 @@ Electron의 `app.getPath("userData")` 아래에 저장합니다.
 - npm 9 이상
 
 ```bash
-git clone https://github.com/mndangee/proxy.git
-cd proxy
+git clone https://github.com/mndangee/dataforge.git
+cd dataforge
 npm install
 npm run dev
 ```
@@ -254,8 +254,8 @@ lsof -nP -iTCP:7777 -iTCP:7778 -iTCP:4780
 
 ## 릴리즈 다운로드
 
-- [최신 릴리스](https://github.com/mndangee/proxy/releases/latest)
-- [모든 릴리스](https://github.com/mndangee/proxy/releases)
+- [최신 릴리스](https://github.com/mndangee/dataforge/releases/latest)
+- [모든 릴리스](https://github.com/mndangee/dataforge/releases)
 
 ## 기술 스택
 
