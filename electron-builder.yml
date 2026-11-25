@@ -18,12 +18,14 @@ win:
   # `proxy.exe`는 다른 프록시·보안 프로그램과 이름이 겹쳐 설치 프로그램이
   # 무관한 프로세스를 DataForge로 오인할 수 있으므로 고유한 이름을 사용합니다.
   executableName: DataForge
+  icon: src/assets/app-icon.png
 nsis:
   artifactName: DataForge-${version}-setup.${ext}
   shortcutName: DataForge
   uninstallDisplayName: DataForge
   createDesktopShortcut: always
 mac:
+  icon: src/assets/app-icon.png
   hardenedRuntime: true
   entitlements: electron/entitlements.mac.plist
   entitlementsInherit: electron/entitlements.mac.plist

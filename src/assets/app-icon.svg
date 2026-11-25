@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="DataForge app icon">
+  <rect x="32" y="32" width="960" height="960" rx="224" fill="#0B5CFF"/>
+  <rect x="184" y="278" width="536" height="380" rx="92" fill="#8FB5FF"/>
+  <rect x="248" y="342" width="552" height="388" rx="96" fill="#C8DAFF"/>
+  <rect x="320" y="414" width="552" height="388" rx="96" fill="#FFFFFF"/>
+  <circle cx="716" cy="654" r="104" fill="#0B5CFF"/>
+  <path d="M662 654l36 36 74-82" fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
